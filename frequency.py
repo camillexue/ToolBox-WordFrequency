@@ -10,7 +10,20 @@ def get_word_list(file_name):
     returns a list of the words used in the book as a list.
     All words are converted to lower case.
     """
-    pass
+    f = open(file_name, 'r')
+    lines = f.readlines()
+    curr_line = 0
+    while lines[curr_line].find('START OF THIS PROJECT GUTENBERG EBOOK') == -1:
+        curr_line += 1
+    lines = lines[curr_line+1:]
+    words = ''.join(lines)
+    for symbol in string.punctuation:  # removes punctuation
+        words = words.replace(symbol, '')
+    edited_words = words.replace('\r', '')  # removes whitespace character
+
+    edited_words = edited_words.lower()  # changes all words to lowercase
+    final_edit = edited_words.split()  # splits words into list
+    return final_edit
 
 
 def get_top_n_words(word_list, n):
@@ -23,8 +36,16 @@ def get_top_n_words(word_list, n):
     returns: a list of n most frequently occurring words ordered from most
     frequently to least frequentlyoccurring
     """
-    pass
+    histogram = dict()
+    for word in word_list:
+        histogram[word] = histogram.get(word, 0) + 1
+
+    # Make List from most frequent to least frequent
+    ordered_by_frequency = sorted(histogram, key=histogram.get, reverse=True)
+    topwords = ordered_by_frequency[:n]  # only includes top 10 items
+    return topwords
+
 
 if __name__ == "__main__":
     print("Running WordFrequency Toolbox")
-    print(string.punctuation)
+    print(get_top_n_words(get_word_list('dorian.txt'), 50))
